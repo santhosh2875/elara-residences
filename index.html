@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Elara</title>
+  <meta name="description" content="Three seafront residential towers linked by a sky pool. Choose a view, find your floor and book a viewing.">
+  <script>document.documentElement.classList.add("js");</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#residences">Skip to residences</a>
+
+  <header class="topbar" id="topbar">
+    <a class="brand" id="brand" href="#top">ELARA</a>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="#residences">Residences</a>
+      <a href="#amenities">Amenities</a>
+      <a href="#location">Location</a>
+      <a href="#book">Contact</a>
+    </nav>
+    <a class="cta" href="#book">Book a viewing</a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+  </header>
+
+  <!-- Hero: stays pinned while the page slides up over it -->
+  <section class="hero" id="top" aria-label="Views of the towers">
+    <div class="hero-pin">
+      <!-- One layer per view, built by script.js from config.js -->
+      <div class="stage" id="stage" aria-hidden="true"></div>
+      <div class="scrim" aria-hidden="true"></div>
+
+      <div class="hero-inner">
+        <div class="caption" id="caption" aria-live="polite">
+          <p class="place" id="place"></p>
+          <h1 class="title" id="title"></h1>
+          <p class="facts" id="facts"></p>
+        </div>
+
+        <aside class="views" id="views" aria-labelledby="viewsHeading">
+          <h2 id="viewsHeading">Choose your view</h2>
+          <ul id="viewList"></ul>
+        </aside>
+      </div>
+
+      <a class="scroll-cue" href="#residences"><span>Residences</span></a>
+    </div>
+  </section>
+
+  <main class="sheet" id="content">
+
+    <!-- Residences: pick a home, see its floors light up on the towers -->
+    <section class="section residences" id="residences" aria-labelledby="resTitle">
+      <div class="wrap">
+        <header class="section-head">
+          <h2 class="display" id="resTitle">
+            <span class="line"><span>Choose</span></span>
+            <span class="line"><span>your floor</span></span>
+          </h2>
+          <p class="section-intro" data-reveal>Four kinds of home across 62 floors. Select one to see where it sits in the towers.</p>
+        </header>
+
+        <div class="res-grid">
+          <div class="tower" data-reveal>
+            <div class="tower-fig">
+              <svg id="towerSvg" viewBox="0 0 320 640" role="img" aria-labelledby="towerDesc"></svg>
+              <p class="visually-hidden" id="towerDesc">Drawing of the three towers with the selected floors highlighted.</p>
+              <p class="band-label" id="bandLabel" aria-hidden="true"></p>
+            </div>
+            <p class="tower-key"><span aria-hidden="true"></span>Sky bridge pool, floor 58</p>
+          </div>
+          <ul class="res-list" id="resList"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Amenities: scrolls sideways while the page scrolls down -->
+    <section class="amenities" id="amenities" aria-labelledby="amTitle">
+      <div class="am-pin">
+        <header class="am-head wrap">
+          <h2 class="display" id="amTitle">
+            <span class="line"><span>Life between the towers</span></span>
+          </h2>
+          <p class="section-intro" data-reveal>Six places residents share, from the waterfront up to the roof.</p>
+        </header>
+        <div class="am-viewport" id="amViewport">
+          <ul class="am-track" id="amTrack"></ul>
+        </div>
+        <div class="am-progress wrap" aria-hidden="true"><span id="amBar"></span></div>
+      </div>
+    </section>
+
+    <!-- Location -->
+    <section class="section location" id="location" aria-labelledby="locTitle">
+      <div class="wrap loc-grid">
+        <div class="loc-media">
+          <div class="loc-frame" id="locFrame">
+            <img id="locImage" alt="The three towers on the seafront, seen from above the bay" loading="lazy">
+          </div>
+        </div>
+        <div class="loc-copy">
+          <h2 class="display" id="locTitle"></h2>
+          <p class="section-intro" id="locText" data-reveal></p>
+          <ul class="places" id="places"></ul>
+          <p class="fine" id="locNote" data-reveal></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Book a viewing -->
+    <section class="book" id="book" aria-labelledby="bookTitle">
+      <div class="book-bg" aria-hidden="true"><img src="assets/gallery/sunrise.jpg" alt="" loading="lazy"></div>
+      <div class="wrap book-grid">
+        <div class="book-copy">
+          <h2 class="display" id="bookTitle">
+            <span class="line"><span>Come and see</span></span>
+            <span class="line"><span>it for yourself</span></span>
+          </h2>
+          <p class="section-intro" data-reveal>Tell us when suits you and which residence you have in mind. The sales team will reply to confirm a time.</p>
+          <dl class="book-contact" data-reveal>
+            <div><dt>Sales gallery</dt><dd id="contactGallery"></dd></div>
+            <div><dt>Hours</dt><dd id="contactHours"></dd></div>
+            <div><dt>Phone</dt><dd><a id="contactPhone"></a></dd></div>
+          </dl>
+        </div>
+
+        <form class="book-form" id="bookForm" novalidate data-reveal>
+          <div class="field">
+            <label for="fName">Full name</label>
+            <input id="fName" name="name" type="text" autocomplete="name" required aria-describedby="fNameErr">
+            <p class="field-error" id="fNameErr"></p>
+          </div>
+          <div class="field">
+            <label for="fPhone">Phone</label>
+            <input id="fPhone" name="phone" type="tel" autocomplete="tel" required aria-describedby="fPhoneErr">
+            <p class="field-error" id="fPhoneErr"></p>
+          </div>
+          <div class="field">
+            <label for="fResidence">Residence</label>
+            <select id="fResidence" name="residence">
+              <option value="">Not sure yet</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="fDay">Preferred day <span class="optional">(optional)</span></label>
+            <input id="fDay" name="day" type="date">
+          </div>
+          <div class="field field-wide">
+            <label for="fMessage">Anything we should know <span class="optional">(optional)</span></label>
+            <textarea id="fMessage" name="message" rows="3"></textarea>
+          </div>
+          <div class="field-wide form-foot">
+            <button class="btn" type="submit">Send request by email</button>
+            <p class="form-status" id="formStatus" role="status"></p>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <p class="footer-mark" id="footerMark" aria-hidden="true" data-reveal>ELARA</p>
+      <div class="footer-cols">
+        <div>
+          <h3>Sales gallery</h3>
+          <p id="footGallery"></p>
+          <p id="footHours"></p>
+        </div>
+        <div>
+          <h3>Contact</h3>
+          <p><a id="footEmail"></a></p>
+          <p><a id="footPhone"></a></p>
+        </div>
+        <div>
+          <h3>Explore</h3>
+          <p><a href="#top">Views</a></p>
+          <p><a href="#residences">Residences</a></p>
+          <p><a href="#amenities">Amenities</a></p>
+          <p><a href="#location">Location</a></p>
+        </div>
+      </div>
+      <p class="legal">© 2026 <span id="footBrand">Elara</span>. Images are computer-generated impressions and may differ from the finished building.</p>
+    </div>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+  <script src="sections.js"></script>
+</body>
+</html>

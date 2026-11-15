@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Higgsfield guide | Elara</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400;6..96,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --haze: #eef3f2;
+      --sheet: #ffffff;
+      --ink: #0d1820;
+      --ink-soft: #4a5a63;
+      --line: #cfdad9;
+      --sea: #1c5d6a;
+      --sea-tint: #e0ebea;
+      --dawn: #f1d6a8;
+      --ok: #1f7a55;
+      --display: "Bodoni Moda", "Didot", serif;
+      --text: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--haze);
+      color: var(--ink);
+      font-family: var(--text);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    :focus-visible { outline: 2px solid var(--sea); outline-offset: 2px; border-radius: 4px; }
+
+    code { font-family: var(--mono); font-size: 0.88em; background: var(--sea-tint); padding: 0.1em 0.35em; border-radius: 4px; }
+
+    /* ---------- Sticky bar: progress + the one global choice ---------- */
+    .bar {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px 20px;
+      padding: 10px clamp(16px, 4vw, 40px);
+      background: rgba(238, 243, 242, 0.92);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .progress { display: flex; align-items: center; gap: 10px; font-size: 0.92rem; font-weight: 500; }
+    .meter { width: 120px; height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+    .meter span { display: block; height: 100%; width: 0; background: var(--ok); transition: width 300ms ease; }
+
+    .linkbtn {
+      border: 0; background: none; padding: 0; font: inherit; font-size: 0.9rem;
+      color: var(--sea); text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+    }
+
+    .mode { margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 0.92rem; }
+    .seg { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--line); }
+    .seg label { position: relative; cursor: pointer; }
+    .seg input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+    .seg span { display: block; padding: 5px 14px; border-radius: 999px; font-weight: 600; color: var(--ink-soft); }
+    .seg input:checked + span { background: var(--ink); color: var(--haze); }
+    .seg input:focus-visible + span { outline: 2px solid var(--sea); outline-offset: 2px; }
+
+    /* ---------- Page ---------- */
+    main { max-width: 860px; margin: 0 auto; padding: clamp(24px, 5vw, 56px) clamp(16px, 4vw, 40px) 80px; }
+
+    h1 { margin: 0 0 0.3em; font-family: var(--display); font-weight: 400; font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.08; letter-spacing: -0.01em; }
+    .lede { margin: 0; max-width: 62ch; color: var(--ink-soft); font-size: 1.05rem; }
+
+    .setting { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 26px; padding: 16px; background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; }
+    .setting label { display: grid; gap: 4px; flex: 1 1 200px; font-size: 0.85rem; font-weight: 600; color: var(--ink-soft); }
+    .setting input { font: inherit; font-size: 1rem; color: var(--ink); padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--haze); }
+    .setting p { flex-basis: 100%; margin: 0; font-size: 0.88rem; color: var(--ink-soft); }
+
+    .step { margin-top: clamp(40px, 7vw, 72px); }
+    .step > h2 { display: flex; align-items: baseline; gap: 14px; margin: 0 0 6px; font-size: 1.5rem; font-weight: 700; line-height: 1.2; }
+    .step > h2 .num { font-family: var(--display); font-weight: 400; font-size: 2.2rem; color: var(--sea); }
+    .step > p { margin: 0 0 18px; max-width: 66ch; color: var(--ink-soft); }
+
+    /* Model recommendation */
+    .model { padding: 18px 20px; border-radius: 12px; background: var(--ink); color: var(--haze); }
+    .model .label { margin: 0; font-size: 0.85rem; color: rgba(238, 243, 242, 0.7); }
+    .model .name { margin: 2px 0 6px; font-size: 1.45rem; font-weight: 700; line-height: 1.2; }
+    .model .name small { margin-left: 8px; font-size: 0.85rem; font-weight: 400; color: rgba(238, 243, 242, 0.7); }
+    .model .why { margin: 0 0 12px; max-width: 64ch; color: rgba(238, 243, 242, 0.86); }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+    .chips li { padding: 4px 11px; border-radius: 999px; background: rgba(241, 214, 168, 0.16); border: 1px solid rgba(241, 214, 168, 0.5); color: var(--dawn); font-size: 0.88rem; font-weight: 500; }
+    .model details { margin-top: 14px; font-size: 0.92rem; }
+    .model summary { cursor: pointer; color: rgba(238, 243, 242, 0.86); }
+    .model details ul { margin: 8px 0 0; padding-left: 1.1em; color: rgba(238, 243, 242, 0.86); }
+    .model details li { margin: 3px 0; }
+    .model details b { color: var(--haze); }
+
+    /* One card per file to generate */
+    .asset { margin-top: 14px; padding: 16px 18px; background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; }
+    .asset.is-found { border-color: var(--ok); }
+    .asset-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-bottom: 10px; }
+    .asset-head h3 { margin: 0; font-size: 1.05rem; font-weight: 700; }
+    .status { margin-left: auto; padding: 2px 10px; border-radius: 999px; font-size: 0.82rem; font-weight: 600; background: var(--haze); color: var(--ink-soft); border: 1px solid var(--line); }
+    .is-found .status { background: #dff1e8; color: var(--ok); border-color: #a9d6c0; }
+
+    .asset-body { display: flex; gap: 14px; align-items: flex-start; }
+    .prompt { flex: 1; margin: 0; padding: 12px 14px; border-left: 3px solid var(--sea); border-radius: 0 8px 8px 0; background: var(--sea-tint); font-size: 0.95rem; white-space: pre-wrap; }
+    .preview { flex: none; width: 150px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); }
+    .preview[hidden] { display: none; }
+
+    .asset-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 12px; font-size: 0.9rem; color: var(--ink-soft); }
+    .copy { border: 0; border-radius: 999px; padding: 7px 16px; background: var(--sea); color: #fff; font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+    .copy:hover { background: #164b56; }
+    .copy.is-done { background: var(--ok); }
+
+    .note { margin: 14px 0 0; padding: 12px 14px; border-radius: 10px; background: #fbf1dc; border: 1px solid #ecd9ae; font-size: 0.93rem; }
+
+    .files { margin: 0; padding: 14px 16px; border-radius: 10px; background: var(--ink); color: var(--haze); font-family: var(--mono); font-size: 0.86rem; line-height: 1.7; overflow-x: auto; }
+
+    @media (max-width: 620px) {
+      .bar { position: static; }
+      .mode { margin-left: 0; }
+      .asset-body { flex-direction: column; }
+      .preview { width: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) { .meter span { transition: none; } }
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <div class="progress" aria-live="polite">
+      <div class="meter" aria-hidden="true"><span id="meterFill"></span></div>
+      <span id="progressText">Checking folder</span>
+      <button class="linkbtn" id="recheck" type="button">Check folder again</button>
+    </div>
+    <div class="mode" role="radiogroup" aria-label="What matters more">
+      <span>Pick models for</span>
+      <div class="seg">
+        <label><input type="radio" name="mode" value="save"><span>Saving credits</span></label>
+        <label><input type="radio" name="mode" value="best"><span>Best quality</span></label>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <h1>Six views of one building</h1>
+    <p class="lede">
+      Work down the page: one master image, five more angles of the same building, then one short
+      clip per image. Each card turns green by itself when its file is in
+      <code>assets/views</code>.
+    </p>
+
+    <div class="setting">
+      <label>City
+        <input id="city" type="text" autocomplete="off">
+      </label>
+      <label>Water in front of it
+        <input id="water" type="text" autocomplete="off">
+      </label>
+      <p>These fill into the prompts below. The words on the website itself are set in <code>config.js</code>.</p>
+    </div>
+
+    <section class="step" id="step1">
+      <h2><span class="num">1</span> Make the master image</h2>
+      <p>Text to image. This one picture decides how every other view looks, so retry it until you like the building.</p>
+      <div class="model" data-step="master"></div>
+      <div data-assets="master"></div>
+    </section>
+
+    <section class="step" id="step2">
+      <h2><span class="num">2</span> Five more angles of the same building</h2>
+      <p>Image to image. Upload the master image as the reference every single time. If a view comes back with a different-looking building, regenerate that image now: it is far cheaper to fix here than after animating.</p>
+      <div class="model" data-step="angles"></div>
+      <div data-assets="angles"></div>
+    </section>
+
+    <section class="step" id="step3">
+      <h2><span class="num">3</span> Animate each image</h2>
+      <p>Image to video. Only animate stills you are happy with, because this step is where the credits go.</p>
+      <div class="model" data-step="video"></div>
+      <p class="note">
+        Upload the still as the <b>start frame</b> and leave the end frame empty. The clip will have a
+        small jump where it restarts; once your clips are in the folder, that jump can be blended
+        away without spending any credits.
+      </p>
+      <div data-assets="video"></div>
+    </section>
+
+    <section class="step" id="step4">
+      <h2><span class="num">4</span> Put the files in the site</h2>
+      <p>Save every download into <code>assets/views</code> with exactly these names. Stills can be JPG, PNG or WebP. Then open <a href="index.html">the website</a> and reload.</p>
+      <pre class="files">assets/views/01-clouds.mp4    assets/views/01-clouds.jpg
+assets/views/02-sea.mp4       assets/views/02-sea.jpg
+assets/views/03-terrace.mp4   assets/views/03-terrace.jpg
+assets/views/04-skypool.mp4   assets/views/04-skypool.jpg
+assets/views/05-above.mp4     assets/views/05-above.jpg
+assets/views/06-sunrise.mp4   assets/views/06-sunrise.jpg</pre>
+    </section>
+  </main>
+
+  <script>
+  (() => {
+    "use strict";
+
+    const DIR = "assets/views";
+    const STILL_TYPES = ["jpg", "png", "webp", "jpeg"];
+    const DEFAULTS = { mode: "save", city: "Mumbai", water: "the Arabian Sea" };
+
+    // Model names are as listed in Higgsfield's own model catalogue.
+    const MODELS = {
+      master: {
+        save: {
+          name: "Nano Banana Pro", by: "Google",
+          why: "Marked Unlimited in your Higgsfield account, so with the Unlimited switch on it costs no credits. It is also the strongest photorealistic model for this job, so there is no reason to pick a cheaper one.",
+          chips: ["Unlimited switch on", "Aspect ratio 16:9", "Resolution 2K", "No reference image"],
+        },
+        best: {
+          name: "Nano Banana Pro", by: "Google",
+          why: "The strongest photorealistic model for this job, and marked Unlimited in your Higgsfield account. Turn the Unlimited switch off only if the free queue is too slow for you; it then costs credits per image.",
+          chips: ["Unlimited switch on", "Aspect ratio 16:9", "Resolution 2K", "No reference image"],
+        },
+        others: [
+          ["Seedream 4.5", "Also marked Unlimited. Up to 4K. The best free backup if Nano Banana Pro gives you a building you do not like."],
+          ["Kling O1", "Also marked Unlimited. Photorealistic."],
+          ["FLUX.2 Pro", "Also marked Unlimited. Sharp detail."],
+          ["Higgsfield Soul Cinema", "Uses your free generations. Cinematic look, but it is built around people and takes only one reference image."],
+        ],
+      },
+      angles: {
+        save: {
+          name: "Nano Banana Pro", by: "Google",
+          why: "Stay on the same model as the master image so the colours and the building match. It takes your master as a reference and, with the Unlimited switch on, costs no credits.",
+          chips: ["Unlimited switch on", "Reference image: your master", "Aspect ratio 16:9", "Resolution 2K"],
+        },
+        best: {
+          name: "Nano Banana Pro", by: "Google",
+          why: "Takes up to 14 reference images and holds a building's design most faithfully across new camera angles. Marked Unlimited in your account.",
+          chips: ["Unlimited switch on", "Reference image: your master", "Aspect ratio 16:9", "Resolution 2K"],
+        },
+        others: [
+          ["Seedream 4.5", "Also marked Unlimited. Accepts reference images. Try it for any angle Nano Banana Pro keeps getting wrong."],
+          ["Kling O1", "Also marked Unlimited. Up to 10 reference images."],
+          ["Multi Reference", "Higgsfield's tool for several edits of one image in one go."],
+          ["Seedream 5.0 Pro", "Up to 10 reference images; costs credits."],
+        ],
+      },
+      video: {
+        save: {
+          name: "Seedance 2.5 Flash", by: "Bytedance",
+          why: "The fast, cheaper tier of Seedance 2.5. Takes a start frame and gives smooth, slow camera moves, which is all a background clip needs.",
+          chips: ["Start frame: the still", "Aspect ratio 16:9", "720p", "Shortest length (about 5 s)", "Audio off"],
+        },
+        best: {
+          name: "Seedance 2.5", by: "Bytedance",
+          why: "Full-quality Seedance with 1080p output, so the clip stays sharp on a large monitor.",
+          chips: ["Start frame: the still", "Aspect ratio 16:9", "1080p", "Shortest length (about 5 s)", "Audio off"],
+        },
+        others: [
+          ["Kling 3.0 Turbo", "Budget option, start frame only, 720p or 1080p."],
+          ["Kling 4.0 Flash", "Fast 720p from one start frame."],
+          ["Kling 4.0", "Premium option with keyframes, 720p or 1080p."],
+          ["Cinema Studio Video 3.0", "Higgsfield's top cinematic model, 4 to 15 s, up to 4K. The most expensive choice."],
+        ],
+      },
+    };
+
+    const SAME = "Use the reference image. Exactly the same three towers with the same sky bridge, balconies and garden terraces, unchanged architecture.";
+    const GUARD = "The building stays perfectly rigid and unchanged. No new objects, no people appearing, no text, no morphing, no cuts.";
+
+    const STILLS = [
+      { file: "01-clouds", group: "master", title: "Above the clouds",
+        prompt: "Aerial architectural photograph of three slender luxury residential towers, about 62 floors each, white curved balconies with glass railings, lush planted garden terraces with palm trees stepping up each tower. Near the top, the three towers are linked by a glass sky bridge that holds a swimming pool. The towers rise out of a thick sea of low golden clouds at sunrise, with the faint hazy skyline of {city} far behind. The towers sit in the centre of the frame. Soft warm backlight, muted cinematic colour, photorealistic architectural visualisation, highly detailed, 16:9." },
+      { file: "02-sea", group: "angles", title: "On the sea",
+        prompt: SAME + " New camera angle: wide drone shot on a clear golden-hour evening showing the towers standing on the seafront of {city}, {water} in the foreground with a few small boats, a curved promenade, dense city stretching behind. Photorealistic, muted cinematic colour, 16:9." },
+      { file: "03-terrace", group: "angles", title: "Terrace",
+        prompt: SAME + " New camera angle: close view at penthouse level of a curved infinity pool terrace wrapping around one tower, sun loungers, tropical planting and palms, {water} and the coastline beyond, warm sunset light. No people. Photorealistic, 16:9." },
+      { file: "04-skypool", group: "angles", title: "Sky pool",
+        prompt: SAME + " New camera angle: looking down diagonally from above at the glass sky bridge pool that links the towers, turquoise water visible through the glass, rooftop gardens on each tower, a sea of clouds far below. Photorealistic, 16:9." },
+      { file: "05-above", group: "angles", title: "From above",
+        prompt: SAME + " New camera angle: steep top-down drone view of the three rooftops, the sky bridge between them and the garden terraces on every level, soft clouds drifting below. Photorealistic, 16:9." },
+      { file: "06-sunrise", group: "angles", title: "Sunrise",
+        prompt: SAME + " New camera angle: distant, straight-on wide shot with the towers smaller in the frame, standing in a vast calm cloudscape, the sun just above the horizon behind them, pale gold and blue sky. Photorealistic, 16:9." },
+    ];
+
+    const CLIPS = [
+      { file: "01-clouds", title: "Above the clouds", motion: "Very slow, smooth drone push-in towards the towers. Clouds drift gently from left to right." },
+      { file: "02-sea", title: "On the sea", motion: "Slow, smooth drone orbit a few degrees to the right. Boats move slowly across the water, gentle waves." },
+      { file: "03-terrace", title: "Terrace", motion: "Slow, smooth forward glide along the pool terrace. Water ripples, palm leaves sway slightly." },
+      { file: "04-skypool", title: "Sky pool", motion: "Slow, smooth descent towards the sky bridge pool. Water shimmers, clouds drift below." },
+      { file: "05-above", title: "From above", motion: "Very slow rotation of the top-down view. Clouds drift below the towers." },
+      { file: "06-sunrise", title: "Sunrise", motion: "Very slow, smooth pull-back. Clouds roll gently, sunlight grows slightly warmer." },
+    ];
+
+    // ---------- Saved choices ----------
+    const store = {
+      get(key) {
+        try { return localStorage.getItem("elara-guide-" + key) || DEFAULTS[key]; }
+        catch (_) { return DEFAULTS[key]; }
+      },
+      set(key, value) {
+        try { localStorage.setItem("elara-guide-" + key, value); } catch (_) { /* private mode */ }
+      },
+    };
+
+    const state = { mode: store.get("mode"), city: store.get("city"), water: store.get("water") };
+    const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+    const fill = (text) => text.replaceAll("{city}", state.city.trim() || DEFAULTS.city)
+                               .replaceAll("{water}", state.water.trim() || DEFAULTS.water);
+
+    // ---------- Model cards ----------
+    function renderModels() {
+      document.querySelectorAll(".model").forEach((box) => {
+        const step = MODELS[box.dataset.step];
+        const pick = step[state.mode];
+        const wasOpen = box.querySelector("details")?.open;
+        box.innerHTML =
+          `<p class="label">Model to pick in Higgsfield</p>` +
+          `<p class="name">${esc(pick.name)}<small>${esc(pick.by)}</small></p>` +
+          `<p class="why">${esc(pick.why)}</p>` +
+          `<ul class="chips">${pick.chips.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` +
+          `<details${wasOpen ? " open" : ""}><summary>Other models that also work</summary><ul>` +
+          step.others.map(([n, d]) => `<li><b>${esc(n)}</b>: ${esc(d)}</li>`).join("") +
+          `</ul></details>`;
+      });
+    }
+
+    // ---------- Asset cards ----------
+    const cards = []; // { el, promptEl, text(), kind, file }
+
+    function addCard(host, { heading, saveAs, extra, text, kind, file }) {
+      const el = document.createElement("article");
+      el.className = "asset";
+      el.innerHTML =
+        `<div class="asset-head"><h3>${esc(heading)}</h3><span class="status">Not in folder yet</span></div>` +
+        `<div class="asset-body"><p class="prompt"></p><img class="preview" alt="" hidden></div>` +
+        `<div class="asset-foot"><button class="copy" type="button">Copy prompt</button>` +
+        `<span>${extra ? extra + " " : ""}Save as <code>${esc(saveAs)}</code></span></div>`;
+      host.append(el);
+
+      const card = { el, promptEl: el.querySelector(".prompt"), text, kind, file };
+      el.querySelector(".copy").addEventListener("click", (e) => copy(card.text(), e.currentTarget));
+      cards.push(card);
+    }
+
+    STILLS.forEach((s) => {
+      addCard(document.querySelector(`[data-assets="${s.group}"]`), {
+        heading: `${s.title} (still)`,
+        saveAs: `${s.file}.jpg`,
+        text: () => fill(s.prompt),
+        kind: "still",
+        file: s.file,
+      });
+    });
+
+    CLIPS.forEach((c) => {
+      addCard(document.querySelector('[data-assets="video"]'), {
+        heading: `${c.title} (clip)`,
+        saveAs: `${c.file}.mp4`,
+        extra: `Start frame: <code>${esc(c.file)}.jpg</code>.`,
+        text: () => `${c.motion} ${GUARD}`,
+        kind: "clip",
+        file: c.file,
+      });
+    });
+
+    function renderPrompts() {
+      cards.forEach((card) => { card.promptEl.textContent = card.text(); });
+    }
+
+    // ---------- Copy ----------
+    async function copy(text, button) {
+      let ok = false;
+      try {
+        await navigator.clipboard.writeText(text);
+        ok = true;
+      } catch (_) {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.append(ta);
+        ta.select();
+        try { ok = document.execCommand("copy"); } catch (_) { ok = false; }
+        ta.remove();
+      }
+      button.textContent = ok ? "Copied" : "Select the text and copy it";
+      button.classList.toggle("is-done", ok);
+      window.setTimeout(() => {
+        button.textContent = "Copy prompt";
+        button.classList.remove("is-done");
+      }, 1800);
+    }
+
+    // ---------- Folder check: which files already exist ----------
+    function findStill(file) {
+      return new Promise((resolve) => {
+        const attempt = (n) => {
+          if (n >= STILL_TYPES.length) return resolve(null);
+          const url = `${DIR}/${file}.${STILL_TYPES[n]}`;
+          const img = new Image();
+          img.onload = () => resolve(url);
+          img.onerror = () => attempt(n + 1);
+          img.src = `${url}?t=${Date.now()}`;
+        };
+        attempt(0);
+      });
+    }
+
+    function findClip(file) {
+      return new Promise((resolve) => {
+        const url = `${DIR}/${file}.mp4`;
+        const video = document.createElement("video");
+        video.preload = "metadata";
+        video.onloadedmetadata = () => resolve(url);
+        video.onerror = () => resolve(null);
+        video.src = `${url}?t=${Date.now()}`;
+      });
+    }
+
+    let checkRun = 0;
+    async function checkFolder() {
+      const run = ++checkRun;
+      const found = await Promise.all(cards.map((c) => (c.kind === "still" ? findStill(c.file) : findClip(c.file))));
+      if (run !== checkRun) return;
+
+      found.forEach((url, i) => {
+        const card = cards[i];
+        card.el.classList.toggle("is-found", Boolean(url));
+        card.el.querySelector(".status").textContent = url ? "In folder" : "Not in folder yet";
+        const preview = card.el.querySelector(".preview");
+        if (card.kind === "still" && url) {
+          preview.src = url;
+          preview.hidden = false;
+        } else {
+          preview.hidden = true;
+        }
+      });
+
+      const done = found.filter(Boolean).length;
+      document.getElementById("meterFill").style.width = `${(done / cards.length) * 100}%`;
+      document.getElementById("progressText").textContent =
+        done === cards.length ? "All 12 files are in the folder" : `${done} of ${cards.length} files in the folder`;
+    }
+
+    // ---------- Wiring ----------
+    document.querySelectorAll('input[name="mode"]').forEach((input) => {
+      input.checked = input.value === state.mode;
+      input.addEventListener("change", () => {
+        state.mode = input.value;
+        store.set("mode", state.mode);
+        renderModels();
+      });
+    });
+
+    ["city", "water"].forEach((key) => {
+      const input = document.getElementById(key);
+      input.value = state[key];
+      input.placeholder = DEFAULTS[key];
+      input.addEventListener("input", () => {
+        state[key] = input.value;
+        store.set(key, input.value);
+        renderPrompts();
+      });
+    });
+
+    document.getElementById("recheck").addEventListener("click", checkFolder);
+    window.addEventListener("focus", checkFolder);
+
+    renderModels();
+    renderPrompts();
+    checkFolder();
+  })();
+  </script>
+</body>
+</html>
